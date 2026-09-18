@@ -1,5 +1,5 @@
 /* BreastAware service worker — offline shell cache */
-const CACHE = 'breastaware-v1';
+const CACHE = 'breastaware-v2';
 const PRECACHE = ['/', '/index.html', '/manifest.webmanifest', '/favicon.svg'];
 
 self.addEventListener('install', (event) => {
