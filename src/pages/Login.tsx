@@ -129,9 +129,7 @@ export default function Login() {
               </button>
             </p>
 
-            <p className="mt-4 text-center text-xs text-charcoal/45">
-              Demo: <span className="font-mono">demo@breastaware.app</span> / <span className="font-mono">demo1234</span>
-            </p>
+            
           </div>
 
           <div className="mt-6 flex items-start gap-2 text-xs text-charcoal/50 px-1">
