@@ -13,6 +13,7 @@ import {
   Settings,
   FileText,
   CircleDot,
+  ClipboardList,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -32,6 +33,7 @@ const sideNav = [
   { to: '/body-map', label: 'Body Map', icon: Map },
   { to: '/screening', label: 'Screening & Risk', icon: CalendarHeart },
   { to: '/doctor-prep', label: 'Doctor Prep', icon: Stethoscope },
+  { to: '/visit-readiness', label: 'Visit Readiness', icon: ClipboardList },
   { to: '/summary', label: 'Health Summary', icon: FileText },
   { to: '/vault', label: 'Health Vault', icon: FolderLock },
   { to: '/education', label: 'Education Center', icon: GraduationCap },
@@ -44,7 +46,6 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-ivory text-charcoal flex">
-      {/* Desktop sidebar */}
       <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 border-r border-border bg-white/70 backdrop-blur-sm sticky top-0 h-screen">
         <div className="px-6 py-6 border-b border-border">
           <div className="flex items-center gap-2.5">
@@ -87,7 +88,6 @@ export default function Layout() {
         </div>
       </aside>
 
-      {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 pb-20 lg:pb-0">
         <header className="lg:hidden sticky top-0 z-30 bg-ivory/95 backdrop-blur border-b border-border px-4 py-3 flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-forest flex items-center justify-center">
@@ -104,7 +104,6 @@ export default function Layout() {
         </main>
       </div>
 
-      {/* Mobile bottom nav */}
       <nav
         className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-border safe-bottom"
         aria-label="Mobile"
