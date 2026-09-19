@@ -81,7 +81,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, []);
 
@@ -255,4 +254,41 @@ export default function Home() {
         </div>
 
         <div className="rounded-2xl border border-border bg-white p-5 shadow-soft">
-          <div 
+          <div className="flex items-center gap-2 text-forest mb-3">
+            <Stethoscope className="w-4 h-4" />
+            <h3 className="text-sm font-semibold">Doctor preparation</h3>
+          </div>
+          {incompletePrep.length > 0 ? (
+            <>
+              <p className="text-charcoal font-medium">{incompletePrep.length} item{incompletePrep.length === 1 ? '' : 's'} ready to review</p>
+              <p className="text-sm text-charcoal/60 mt-1 line-clamp-2">{incompletePrep[0].content}</p>
+              <Link to="/doctor-prep" className="inline-flex items-center gap-1 text-sm text-forest mt-3 font-medium">
+                Complete prep <ChevronRight className="w-4 h-4" />
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-charcoal/60">No open prep items. Add questions or history notes before your next visit.</p>
+              <Link to="/doctor-prep" className="inline-flex items-center gap-1 text-sm text-forest mt-3 font-medium">
+                Open Doctor Prep <ChevronRight className="w-4 h-4" />
+              </Link>
+            </>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-border bg-white p-5 shadow-soft">
+          <div className="flex items-center gap-2 text-forest mb-3">
+            <ClipboardList className="w-4 h-4" />
+            <h3 className="text-sm font-semibold">Visit readiness</h3>
+          </div>
+          <p className="text-sm text-charcoal/70 leading-relaxed">Prepare accurate answers clinicians may ask — so you don’t have to recall on the spot. No scores, just your notes.</p>
+          <Link to="/visit-readiness" className="inline-flex items-center gap-1 text-sm text-forest mt-3 font-medium">
+            Prepare answers <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </section>
+
+      <Disclaimer />
+    </div>
+  );
+}
