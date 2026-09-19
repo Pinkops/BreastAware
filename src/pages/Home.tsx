@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  ClipboardList,
   NotebookPen,
   CalendarClock,
   ChevronRight,
@@ -79,7 +80,7 @@ export default function Home() {
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, []);
@@ -129,7 +130,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Hero */}
       <section className="rounded-2xl border border-border bg-white shadow-soft overflow-hidden">
         <div className="p-6 sm:p-8 bg-gradient-to-br from-forest/5 via-white to-rose-soft/20">
           <p className="text-xs uppercase tracking-widest text-forest/80 font-medium mb-2">Guiding principle</p>
@@ -151,7 +151,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quick check-in */}
       <section>
         <h3 className="font-display text-lg text-charcoal mb-3">Quick check-in</h3>
         <div className="grid sm:grid-cols-3 gap-3">
@@ -180,7 +179,6 @@ export default function Home() {
         )}
       </section>
 
-      {/* Snapshot cards */}
       <section className="grid sm:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-border bg-white p-5 shadow-soft">
           <div className="flex items-center gap-2 text-forest mb-3">
@@ -257,30 +255,4 @@ export default function Home() {
         </div>
 
         <div className="rounded-2xl border border-border bg-white p-5 shadow-soft">
-          <div className="flex items-center gap-2 text-forest mb-3">
-            <Stethoscope className="w-4 h-4" />
-            <h3 className="text-sm font-semibold">Doctor preparation</h3>
-          </div>
-          {incompletePrep.length > 0 ? (
-            <>
-              <p className="text-charcoal font-medium">{incompletePrep.length} item{incompletePrep.length === 1 ? '' : 's'} ready to review</p>
-              <p className="text-sm text-charcoal/60 mt-1 line-clamp-2">{incompletePrep[0].content}</p>
-              <Link to="/doctor-prep" className="inline-flex items-center gap-1 text-sm text-forest mt-3 font-medium">
-                Complete prep <ChevronRight className="w-4 h-4" />
-              </Link>
-            </>
-          ) : (
-            <>
-              <p className="text-sm text-charcoal/60">No open prep items. Add questions or history notes before your next visit.</p>
-              <Link to="/doctor-prep" className="inline-flex items-center gap-1 text-sm text-forest mt-3 font-medium">
-                Open Doctor Prep <ChevronRight className="w-4 h-4" />
-              </Link>
-            </>
-          )}
-        </div>
-      </section>
-
-      <Disclaimer />
-    </div>
-  );
-}
+          <div 
