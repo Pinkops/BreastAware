@@ -39,7 +39,7 @@ const routes = {
 export default async function handler(req, res) {
   const route = routes[req.query?.resource];
   if (!route) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // No CORS header here either (BA-010): the API is same-origin only.
     return res.status(404).json({ error: 'Not found' });
   }
   return route(req, res);
