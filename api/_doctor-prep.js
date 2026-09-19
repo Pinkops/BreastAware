@@ -1,4 +1,4 @@
-import supabase from './db-client.js';
+import supabase from './_db-client.js';
 import { requireUser, cors } from './_auth.js';
 import { pick, serverError } from './_util.js';
 
