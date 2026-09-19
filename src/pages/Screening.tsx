@@ -122,7 +122,8 @@ export default function Screening() {
   };
 
   useEffect(() => {
-    load();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void load();
   }, []);
 
   const addScreening = async (e: FormEvent) => {
