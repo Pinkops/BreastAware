@@ -85,7 +85,7 @@ export default async function handler(req, res) {
       if (b.side !== undefined && !SIDES.includes(b.side)) {
         return res.status(400).json({ error: 'side must be one of: ' + SIDES.join(', ') });
       }
-      if (b.observed_at !== undefined && !b.observed_at === false && !validDate(b.observed_at)) {
+      if (b.observed_at !== undefined && !validDate(b.observed_at)) {
         return res.status(400).json({ error: 'observed_at must be a valid date' });
       }
       const updates = pick(b, FIELDS, { limits: LIMITS, booleans: BOOLEANS });
