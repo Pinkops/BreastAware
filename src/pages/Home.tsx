@@ -79,8 +79,9 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    load();
+    useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void load();
   }, []);
 
   const handleCheckIn = async (type: string, note: string) => {
