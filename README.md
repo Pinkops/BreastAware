@@ -1,73 +1,40 @@
-# React + TypeScript + Vite
+# BreastAware — Private Breast-Health Organizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A private, personal breast-health organizer for adults. Know your normal. Notice changes. Keep a record.
 
-Currently, two official plugins are available:
+**Live:** https://breastaware101.vercel.app
+**Privacy:** https://breastaware101.vercel.app/privacy
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> **Not a medical device.** BreastAware does not diagnose, detect cancer, calculate risk scores, or replace mammograms, clinical exams, imaging, or professional medical advice. If you notice a new or changing breast concern, contact a healthcare professional promptly.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Know My Normal** — describe your personal baseline (look, feel, texture, cycle-related changes)
+- **Log a Change** — structured capture (type, side, location, pain, duration, notes) with non-diagnostic language
+- **Body Map** — approximate marker placement for personal documentation only
+- **Journal** — chronological timeline of observations, screenings, appointments
+- **Screening & Risk** — organize screening history, appointments, and self-noted history topics (no scores generated)
+- **Doctor Prep** — collect questions and history details for visits
+- **Health Summary** — printable conversation sheet (disclaimer: conversation support only)
+- **Health Vault** — private document storage with short-lived signed links (10-min expiry)
+- **Education Center** — 8 plain-language topics sourced from CDC, NCI, ACS, USPSTF, MedlinePlus, OWH, HHS, FTC
+- **Settings & Privacy** — export all data (JSON), delete all data & account, profile preferences
+- **Privacy Policy** — public route `/privacy`, linked from login and settings
 
-## Expanding the ESLint configuration
+## Safety & Clinical Posture
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- No diagnosis, no cancer detection, no risk scoring — ever
+- Every page carries a disclaimer; Health Summary marked "conversation support only"
+- Symptom list matches CDC "Symptoms of Breast Cancer" (verified 2026-09-19)
+- Self-awareness framing matches CDC: "clinical breast exam or breast self-exam has not been found to lower the risk of dying" — app avoids promising mortality benefit
+- Education citations re-verified live 2026-09-19: 1 dead CDC Hear Her link replaced with NCI Questions to Ask Your Doctor, 2 moved NCI URLs updated to canonical paths
+- All 8 articles versioned (`version=2`, `reviewed_at=2026-09-19`)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Frontend:** React 19 + TypeScript 5.9 (strict), Vite 7, Tailwind CSS 4, react-router-dom 7.18.4, lucide-react
+- **Backend:** Vercel serverless — single `api/[resource].js` router + 14 underscore-prefixed modules (Hobby 12-function limit workaround)
+- **DB/Auth/Storage:** Supabase (Postgres + Auth + private bucket `ba-vault` with signed URLs)
+- **PWA:** Hand-written `public/sw.js` (network-first nav, cache-first assets, `/api/*` never cached), `manifest.webmanifest`
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Architecture
