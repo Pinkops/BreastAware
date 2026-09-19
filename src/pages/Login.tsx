@@ -123,7 +123,9 @@ export default function Login() {
 
           <div className="mt-6 flex items-start gap-2 text-xs text-charcoal/50 px-1">
             <Shield className="w-4 h-4 shrink-0 mt-0.5 text-forest/70" />
-            <p>Privacy-first by design. Health notes are treated as sensitive personal information.</p>
+              <p>Privacy-first by design. Health notes are treated as sensitive personal information.{' '}
+              <a href="/privacy" className="underline text-forest">Read our Privacy Policy</a>.
+            </p>
           </div>
 
           <div className="mt-4">
