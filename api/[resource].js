@@ -18,6 +18,7 @@ import screenings from './_screenings.js';
 import summary from './_summary.js';
 import upload from './_upload.js';
 import vault from './_vault.js';
+import visitReadiness from './_visit-readiness.js';
 import { rateLimit } from './_util.js';
 
 const routes = {
@@ -35,28 +36,26 @@ const routes = {
   summary,
   upload,
   vault,
+  'visit-readiness': visitReadiness,
 };
 
 export default async function handler(req, res) {
   const resource = req.query?.resource;
   const route = routes[resource];
   if (!route) {
-    // No CORS header here either (BA-010): the API is same-origin only.
     return res.status(404).json({ error: 'Not found' });
   }
 
-  // BA-011 / BA-062: rate limiting (free, in-memory, per-instance)
-  // Stricter for mutations, looser for reads. Education is public and low-risk but still limited.
   const isMutation = req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE';
   const isSensitive = resource === 'upload' || resource === 'export';
   
-  let limit = 100; // default: 100 req/min per IP for reads
-  if (isSensitive) limit = 20; // uploads/exports are heavier
-  else if (isMutation) limit = 40; // mutations: 40/min per IP
-  else if (resource === 'education') limit = 120; // education list is cheap and public
+  let limit = 100;
+  if (isSensitive) limit = 20;
+  else if (isMutation) limit = 40;
+  else if (resource === 'education') limit = 120;
 
   const ok = rateLimit(req, res, { limit, windowMs: 60 * 1000, keyPrefix: `rl:${resource}:${req.method}` });
-  if (!ok) return; // 429 already sent
+  if (!ok) return;
 
   return route(req, res);
 }
