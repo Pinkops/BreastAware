@@ -1,5 +1,12 @@
 import supabase from './db-client.js';
 import { requireUser, cors } from './_auth.js';
+import { pick, serverError } from './_util.js';
+
+const FIELDS = [
+  'look_notes', 'feel_notes', 'size_shape_notes', 'texture_notes',
+  'nipple_notes', 'cycle_notes', 'asymmetry_notes', 'other_notes',
+];
+const LIMITS = Object.fromEntries(FIELDS.map((f) => [f, 2000]));
 
 export default async function handler(req, res) {
   cors(res);
@@ -21,28 +28,31 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST' || req.method === 'PUT') {
       const b = req.body || {};
-      const row = {
-        user_id: user.id,
-        look_notes: b.look_notes ?? '',
-        feel_notes: b.feel_notes ?? '',
-        size_shape_notes: b.size_shape_notes ?? '',
-        texture_notes: b.texture_notes ?? '',
-        nipple_notes: b.nipple_notes ?? '',
-        cycle_notes: b.cycle_notes ?? '',
-        asymmetry_notes: b.asymmetry_notes ?? '',
-        other_notes: b.other_notes ?? '',
-        updated_at: new Date().toISOString(),
-      };
+      // Merge semantics (BA-021): only fields present in the request are
+      // written; fields you did not send are left untouched, never blanked.
+      const updates = pick(b, FIELDS, { limits: LIMITS });
+      updates.updated_at = new Date().toISOString();
+
       const { data: existing } = await supabase
         .from('ba_normal_baselines')
         .select('id')
         .eq('user_id', user.id)
         .maybeSingle();
+
       let result;
       if (existing?.id) {
-        result = await supabase.from('ba_normal_baselines').update(row).eq('id', existing.id).select().single();
+        result = await supabase
+          .from('ba_normal_baselines')
+          .update(updates)
+          .eq('id', existing.id)
+          .select()
+          .single();
       } else {
-        result = await supabase.from('ba_normal_baselines').insert(row).select().single();
+        result = await supabase
+          .from('ba_normal_baselines')
+          .insert({ user_id: user.id, ...updates })
+          .select()
+          .single();
       }
       if (result.error) throw result.error;
       return res.status(200).json(result.data);
@@ -50,7 +60,6 @@ export default async function handler(req, res) {
 
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
-    console.error('normal-baseline error:', err);
-    res.status(500).json({ error: err.message });
+    serverError(res, err, 'normal-baseline error');
   }
 }
