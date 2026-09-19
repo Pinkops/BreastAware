@@ -48,8 +48,9 @@ export default function Vault() {
     }
   };
 
-  useEffect(() => {
-    load();
+    useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void load();
   }, []);
 
   const onFile = (e: ChangeEvent<HTMLInputElement>) => {
