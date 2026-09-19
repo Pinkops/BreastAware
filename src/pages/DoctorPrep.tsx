@@ -76,8 +76,22 @@ export default function DoctorPrep() {
   };
 
   const toggle = async (item: PrepItem, field: 'is_complete' | 'is_priority' | 'included_in_summary') => {
-    await apiSend('/api/doctor-prep', 'PUT', { id: item.id, [field]: !item[field] });
-    load();
+    try {
+      await apiSend('/api/doctor-prep', 'PUT', { id: item.id, [field]: !item[field] });
+      load();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Update failed');
+    }
+  };
+
+  const removeItem = async (id: number) => {
+    if (!confirm('Delete this prep item? This cannot be undone.')) return;
+    try {
+      await apiSend('/api/doctor-prep', 'DELETE', { id });
+      load();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
+    }
   };
 
   if (loading) return <LoadingSpinner />;
@@ -162,7 +176,7 @@ export default function DoctorPrep() {
                   </div>
                   <p className="text-sm text-charcoal leading-relaxed">{item.content}</p>
                 </div>
-                <button type="button" className="text-charcoal/30 hover:text-rose-deep p-1 h-fit" onClick={async () => { await apiSend('/api/doctor-prep', 'DELETE', { id: item.id }); load(); }}>
+                <button type="button" className="text-charcoal/30 hover:text-rose-deep p-1 h-fit" aria-label="Delete prep item" onClick={() => removeItem(item.id)}>
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
