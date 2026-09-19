@@ -2,8 +2,8 @@ import supabase from './_db-client.js';
 import { requireUser, cors } from './_auth.js';
 import { pick, clampNumber, serverError } from './_util.js';
 
-const FIELDS = ['side', 'label', 'notes', 'x_pct', 'y_pct', 'observation_id'];
-const LIMITS = { side: 20, label: 100, notes: 2000 };
+const FIELDS = ['side', 'label', 'notes', 'x_pct', 'y_pct', 'observation_id', 'quadrant', 'clock_position'];
+const LIMITS = { side: 20, label: 100, notes: 2000, quadrant: 40, clock_position: 30 };
 
 function clampCoords(row) {
   if (row.x_pct !== undefined) row.x_pct = clampNumber(row.x_pct, 0, 100);
@@ -48,6 +48,8 @@ export default async function handler(req, res) {
         label: String(b.label || 'Noted area').slice(0, 100),
         notes: String(b.notes || '').slice(0, 2000),
         observation_id: Number.isInteger(Number(b.observation_id)) && b.observation_id != null ? Number(b.observation_id) : null,
+        quadrant: String(b.quadrant || '').slice(0, 40),
+        clock_position: String(b.clock_position || b.clock || '').slice(0, 30),
       };
       const { data, error } = await supabase.from('ba_body_map_markers').insert(row).select().single();
       if (error) throw error;
