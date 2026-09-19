@@ -22,6 +22,7 @@ export default async function handler(req, res) {
         'ba_doctor_prep',
         'ba_vault_documents',
         'ba_check_ins',
+        'ba_visit_readiness',
       ];
       const exportData = {
         exported_at: new Date().toISOString(),
@@ -54,6 +55,7 @@ export default async function handler(req, res) {
         'ba_body_map_markers',
         'ba_observations',
         'ba_normal_baselines',
+        'ba_visit_readiness',
         'ba_profiles',
       ];
       for (const table of tables) {
@@ -66,8 +68,6 @@ export default async function handler(req, res) {
           await supabase.storage.from('ba-vault').remove(files.map((f) => `${user.id}/${f.name}`));
         }
       } catch {}
-      // BA-014: also delete the auth account itself, so the email can no
-      // longer sign in and no identity record remains.
       const { error: authErr } = await supabase.auth.admin.deleteUser(user.id);
       if (authErr) throw authErr;
       return res.status(200).json({ ok: true });
