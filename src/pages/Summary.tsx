@@ -30,6 +30,7 @@ interface SummaryData {
   risk_notes: Array<{ category: string; description: string }>;
   doctor_prep: Array<{ category: string; content: string; is_priority?: boolean }>;
   body_map_markers: Array<{ label: string; notes?: string; x_pct: number; y_pct: number }>;
+  visit_readiness: Array<{ question_key: string; answer: string }>;
 }
 
 export default function Summary() {
@@ -197,6 +198,20 @@ export default function Summary() {
               {data.body_map_markers.map((m, i) => (
                 <li key={i}>
                   {m.label}{m.notes ? ` — ${m.notes}` : ''} ({m.x_pct}%, {m.y_pct}%)
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {data.visit_readiness && data.visit_readiness.length > 0 && (
+          <section className="rounded-2xl border border-border bg-white p-5 shadow-soft">
+            <h3 className="font-display text-lg mb-3">Visit readiness — prepared answers</h3>
+            <p className="text-xs text-charcoal/50 mb-3">Your own words, prepared in advance for clinician questions. Not a medical assessment.</p>
+            <ul className="space-y-2">
+              {data.visit_readiness.map((v, i) => (
+                <li key={i} className="text-sm">
+                  <span className="text-charcoal/50">{v.question_key.replace(/_/g, ' ')}:</span> {v.answer}
                 </li>
               ))}
             </ul>
