@@ -37,8 +37,9 @@ export default async function handler(req, res) {
         .upload(path, buffer, { contentType, upsert: true });
       if (error) throw error;
 
-      const { data: urlData } = supabase.storage.from('ba-vault').getPublicUrl(path);
-      return res.status(200).json({ url: urlData.publicUrl, fileName: path.split('/').pop(), path });
+      // BA-003: no public URLs. Files are opened later through short-lived
+      // signed links generated in api/vault.js.
+      return res.status(200).json({ fileName: path.split('/').pop(), path });
     }
 
     res.status(405).json({ error: 'Method not allowed' });
