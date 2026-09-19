@@ -20,6 +20,7 @@ export default async function handler(req, res) {
         riskRes,
         prepRes,
         markersRes,
+        readinessRes,
       ] = await Promise.all([
         supabase.from('ba_profiles').select('*').eq('user_id', user.id).maybeSingle(),
         supabase.from('ba_normal_baselines').select('*').eq('user_id', user.id).maybeSingle(),
@@ -29,6 +30,7 @@ export default async function handler(req, res) {
         supabase.from('ba_risk_notes').select('*').eq('user_id', user.id),
         supabase.from('ba_doctor_prep').select('*').eq('user_id', user.id).eq('included_in_summary', true),
         supabase.from('ba_body_map_markers').select('*').eq('user_id', user.id),
+        supabase.from('ba_visit_readiness').select('*').eq('user_id', user.id).eq('include_in_summary', true),
       ]);
 
       const summary = {
@@ -43,6 +45,7 @@ export default async function handler(req, res) {
         risk_notes: riskRes.data || [],
         doctor_prep: prepRes.data || [],
         body_map_markers: markersRes.data || [],
+        visit_readiness: readinessRes.data || [],
       };
 
       return res.status(200).json(summary);
