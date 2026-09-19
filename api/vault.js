@@ -21,7 +21,21 @@ export default async function handler(req, res) {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return res.status(200).json(data || []);
+      const rows = data || [];
+
+      // BA-003: files live in a PRIVATE bucket. Attach a short-lived (10 min)
+      // signed link per document so only the signed-in owner can open files.
+      await Promise.all(rows.map(async (row) => {
+        row.signed_url = null;
+        if (row.file_name) {
+          const { data: signed, error: signErr } = await supabase.storage
+            .from('ba-vault')
+            .createSignedUrl(`${user.id}/${row.file_name}`, 600);
+          if (!signErr && signed?.signedUrl) row.signed_url = signed.signedUrl;
+        }
+      }));
+
+      return res.status(200).json(rows);
     }
 
     if (req.method === 'POST') {
