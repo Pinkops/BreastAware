@@ -2,7 +2,6 @@ import { useState, FormEvent } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Heart, Shield } from 'lucide-react';
 import supabase from '../lib/supabase';
-import { signInWithGoogle } from '../lib/googleAuth';
 import { useAuth } from '../contexts/AuthContext';
 import Disclaimer from '../components/Disclaimer';
 
@@ -103,16 +102,6 @@ export default function Login() {
                 {busy ? 'Please wait…' : isSignUp ? 'Sign up' : 'Sign in'}
               </button>
             </form>
-
-            <div className="my-5 flex items-center gap-3">
-              <div className="flex-1 h-px bg-border" />
-              <span className="text-xs text-charcoal/40 uppercase tracking-wider">or</span>
-              <div className="flex-1 h-px bg-border" />
-            </div>
-
-            <button type="button" onClick={() => signInWithGoogle('BreastAware')} className="btn-secondary w-full">
-              Sign in with Google
-            </button>
 
             <p className="mt-5 text-center text-sm text-charcoal/60">
               {isSignUp ? 'Already have an account?' : 'New here?'}
