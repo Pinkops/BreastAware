@@ -14,8 +14,10 @@ export async function requireUser(req, res) {
   return user;
 }
 
+// BA-010: the app is same-origin (the browser and this API live on the same
+// domain), so cross-origin access is intentionally NOT allowed. We send no
+// Access-Control-Allow-Origin header, which stops other websites from calling
+// this API with a user's token. Kept as a no-op so call sites stay unchanged.
 export function cors(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Intentionally empty — see note above.
 }
