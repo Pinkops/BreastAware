@@ -1,4 +1,4 @@
-import supabase from './db-client.js';
+import supabase from './_db-client.js';
 
 export async function requireUser(req, res) {
   const token = req.headers.authorization?.replace('Bearer ', '');
