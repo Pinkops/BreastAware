@@ -37,7 +37,8 @@ export default function BodyMap() {
   };
 
   useEffect(() => {
-    load();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void load();
   }, []);
 
   const onMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -112,21 +113,14 @@ export default function BodyMap() {
             aria-label="Front chest body map. Click to place a marker."
             className="relative w-full max-w-md mx-auto aspect-[3/4] rounded-2xl border-2 border-dashed border-forest/25 bg-gradient-to-b from-white to-ivory cursor-crosshair shadow-soft overflow-hidden select-none"
           >
-            {/* Simple anatomical silhouette */}
             <svg viewBox="0 0 200 280" className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden>
-              {/* neck */}
               <ellipse cx="100" cy="28" rx="18" ry="14" fill="none" stroke="#2F4F3E" strokeWidth="1.5" opacity="0.35" />
-              {/* shoulders */}
               <path d="M40 50 Q100 40 160 50 L155 70 Q100 58 45 70 Z" fill="#2F4F3E" fillOpacity="0.06" stroke="#2F4F3E" strokeWidth="1.25" opacity="0.5" />
-              {/* torso */}
               <path d="M45 70 Q40 140 50 220 L150 220 Q160 140 155 70 Q100 58 45 70" fill="#2F4F3E" fillOpacity="0.04" stroke="#2F4F3E" strokeWidth="1.25" opacity="0.45" />
-              {/* left breast oval */}
               <ellipse cx="78" cy="105" rx="28" ry="32" fill="#C4787A" fillOpacity="0.08" stroke="#C4787A" strokeWidth="1.2" opacity="0.55" />
               <circle cx="78" cy="108" r="4" fill="#C4787A" fillOpacity="0.25" />
-              {/* right breast oval */}
               <ellipse cx="122" cy="105" rx="28" ry="32" fill="#C4787A" fillOpacity="0.08" stroke="#C4787A" strokeWidth="1.2" opacity="0.55" />
               <circle cx="122" cy="108" r="4" fill="#C4787A" fillOpacity="0.25" />
-              {/* midline */}
               <line x1="100" y1="55" x2="100" y2="200" stroke="#2F4F3E" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.25" />
               <text x="55" y="155" fontSize="8" fill="#2F4F3E" opacity="0.4">L</text>
               <text x="138" y="155" fontSize="8" fill="#2F4F3E" opacity="0.4">R</text>
