@@ -11,6 +11,7 @@ interface Doc {
   title: string;
   doc_type: string;
   file_url?: string;
+  signed_url?: string | null;
   file_name?: string;
   notes?: string;
   document_date?: string;
@@ -78,12 +79,12 @@ export default function Vault() {
           reader.onerror = reject;
           reader.readAsDataURL(file);
         });
-        const uploaded = await apiSend<{ url: string; fileName: string }>('/api/upload', 'POST', {
+         const uploaded = await apiSend<{ fileName: string }>('/api/upload', 'POST', {
           fileName: file.name,
           fileBase64: base64,
           contentType: file.type,
         });
-        file_url = uploaded.url;
+        file_url = '';
         file_name = uploaded.fileName;
       }
       await apiSend('/api/vault', 'POST', {
@@ -184,8 +185,8 @@ export default function Vault() {
                     {d.document_date ? ` · ${formatDate(d.document_date)}` : ''}
                   </p>
                   {d.notes && <p className="text-sm text-charcoal/65 mt-1">{d.notes}</p>}
-                  {d.file_url && (
-                    <a href={d.file_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-forest mt-2 font-medium">
+                  {d.signed_url && (
+                    <a href={d.signed_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-forest mt-2 font-medium">
                       Open file <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   )}
