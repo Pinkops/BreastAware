@@ -151,7 +151,7 @@ export default function Vault() {
         </div>
         <div>
           <label className="text-sm font-medium block mb-1">File (optional)</label>
-          <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx" onChange={onFile} className="block w-full text-sm text-charcoal/70 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-forest/10 file:text-forest file:text-sm" />
+          <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" onChange={onFile} className="block w-full text-sm text-charcoal/70 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-forest/10 file:text-forest file:text-sm" />
           {file && <p className="text-xs text-charcoal/50 mt-1">{file.name}</p>}
         </div>
         <div>
