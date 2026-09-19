@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Settings,
   ChevronRight,
+  ClipboardList,
 } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import Disclaimer from '../components/Disclaimer';
@@ -16,6 +17,7 @@ const links = [
   { to: '/know-my-normal', label: 'Know My Normal', desc: 'Describe your personal baseline', icon: CircleDot },
   { to: '/log-change', label: 'Log a Change', desc: 'Record a new observation', icon: NotebookPen },
   { to: '/doctor-prep', label: 'Doctor Prep', desc: 'Questions and visit notes', icon: Stethoscope },
+  { to: '/visit-readiness', label: 'Visit Readiness', desc: 'Prepare answers clinicians may ask', icon: ClipboardList },
   { to: '/summary', label: 'Health Summary', desc: 'Clinician conversation sheet', icon: FileText },
   { to: '/vault', label: 'Health Vault', desc: 'Secure document storage', icon: FolderLock },
   { to: '/education', label: 'Education Center', desc: 'Plain-language topics', icon: GraduationCap },
