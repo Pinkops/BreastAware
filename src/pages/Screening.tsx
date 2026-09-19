@@ -158,6 +158,36 @@ export default function Screening() {
     }
   };
 
+  const deleteScreening = async (id: number) => {
+    if (!confirm('Delete this screening record? This cannot be undone.')) return;
+    try {
+      await apiSend('/api/screenings', 'DELETE', { id });
+      load();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
+    }
+  };
+
+  const deleteAppointment = async (id: number) => {
+    if (!confirm('Delete this appointment? This cannot be undone.')) return;
+    try {
+      await apiSend('/api/appointments', 'DELETE', { id });
+      load();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
+    }
+  };
+
+  const deleteRisk = async (id: number) => {
+    if (!confirm('Delete this note? This cannot be undone.')) return;
+    try {
+      await apiSend('/api/risk-notes', 'DELETE', { id });
+      load();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
+    }
+  };
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -245,7 +275,7 @@ export default function Screening() {
                     {s.result_summary && <p className="text-sm text-charcoal/70 mt-2">{s.result_summary}</p>}
                     {s.next_due_date && <p className="text-xs text-forest mt-1">Next reminder: {formatDate(s.next_due_date)}</p>}
                   </div>
-                  <button type="button" className="text-charcoal/30 hover:text-rose-deep p-1 h-fit" aria-label="Delete" onClick={async () => { await apiSend('/api/screenings', 'DELETE', { id: s.id }); load(); }}>
+                  <button type="button" className="text-charcoal/30 hover:text-rose-deep p-1 h-fit" aria-label="Delete screening" onClick={() => deleteScreening(s.id)}>
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -311,7 +341,7 @@ export default function Screening() {
                     Mark completed
                   </label>
                 </div>
-                <button type="button" className="text-charcoal/30 hover:text-rose-deep p-1 h-fit" onClick={async () => { await apiSend('/api/appointments', 'DELETE', { id: a.id }); load(); }}>
+                <button type="button" className="text-charcoal/30 hover:text-rose-deep p-1 h-fit" aria-label="Delete appointment" onClick={() => deleteAppointment(a.id)}>
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -369,7 +399,7 @@ export default function Screening() {
                     <p className="text-sm text-charcoal mt-1">{r.description}</p>
                     {r.notes && <p className="text-xs text-charcoal/55 mt-1">{r.notes}</p>}
                   </div>
-                  <button type="button" className="text-charcoal/30 hover:text-rose-deep p-1 h-fit" onClick={async () => { await apiSend('/api/risk-notes', 'DELETE', { id: r.id }); load(); }}>
+                  <button type="button" className="text-charcoal/30 hover:text-rose-deep p-1 h-fit" aria-label="Delete risk note" onClick={() => deleteRisk(r.id)}>
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
