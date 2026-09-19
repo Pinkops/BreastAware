@@ -76,7 +76,7 @@ export default function Settings() {
     }
   };
 
-    const deleteAll = async () => {
+  const deleteAll = async () => {
     if (deleteConfirm !== 'DELETE_MY_DATA') {
       setError('Type DELETE_MY_DATA to confirm.');
       return;
@@ -190,6 +190,10 @@ export default function Settings() {
 
       {msg && <p className="text-sm text-forest">{msg}</p>}
       {error && <p className="text-sm text-rose-deep" role="alert">{error}</p>}
+
+      <p className="text-center text-xs text-charcoal/45">
+        <a href="/privacy" className="underline">Privacy Policy</a>
+      </p>
 
       <Disclaimer />
     </div>
