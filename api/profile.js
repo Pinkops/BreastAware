@@ -1,5 +1,10 @@
 import supabase from './db-client.js';
 import { requireUser, cors } from './_auth.js';
+import { pick, serverError } from './_util.js';
+
+const FIELDS = ['display_name', 'preferred_name', 'onboarding_complete', 'age_range', 'timezone'];
+const LIMITS = { display_name: 100, preferred_name: 100, age_range: 10, timezone: 60 };
+const BOOLEANS = ['onboarding_complete'];
 
 export default async function handler(req, res) {
   cors(res);
@@ -21,25 +26,31 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST' || req.method === 'PUT') {
       const body = req.body || {};
-      const row = {
-        user_id: user.id,
-        display_name: body.display_name ?? null,
-        preferred_name: body.preferred_name ?? null,
-        onboarding_complete: body.onboarding_complete ?? false,
-        age_range: body.age_range ?? null,
-        timezone: body.timezone ?? 'America/New_York',
-        updated_at: new Date().toISOString(),
-      };
+      // Merge semantics (BA-021/BA-025): only fields present in the request are
+      // written. A partial save can never blank out fields you did not send.
+      const updates = pick(body, FIELDS, { limits: LIMITS, booleans: BOOLEANS });
+      updates.updated_at = new Date().toISOString();
+
       const { data: existing } = await supabase
         .from('ba_profiles')
         .select('id')
         .eq('user_id', user.id)
         .maybeSingle();
+
       let result;
       if (existing?.id) {
-        result = await supabase.from('ba_profiles').update(row).eq('id', existing.id).select().single();
+        result = await supabase
+          .from('ba_profiles')
+          .update(updates)
+          .eq('id', existing.id)
+          .select()
+          .single();
       } else {
-        result = await supabase.from('ba_profiles').insert(row).select().single();
+        result = await supabase
+          .from('ba_profiles')
+          .insert({ user_id: user.id, ...updates })
+          .select()
+          .single();
       }
       if (result.error) throw result.error;
       return res.status(200).json(result.data);
@@ -47,7 +58,6 @@ export default async function handler(req, res) {
 
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
-    console.error('profile error:', err);
-    res.status(500).json({ error: err.message });
+    serverError(res, err, 'profile error');
   }
 }
