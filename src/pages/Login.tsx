@@ -48,7 +48,7 @@ export default function Login() {
             </div>
             <h1 className="font-display text-3xl text-charcoal tracking-tight">BreastAware</h1>
             <p className="mt-2 text-sm text-charcoal/65 leading-relaxed max-w-sm mx-auto">
-              A private breast-health organizer for adult women in the U.S. Know your normal. Notice changes. Keep a record.
+              A private breast-health organizer for adults. Know your normal. Notice changes. Keep a record.
             </p>
           </div>
 
