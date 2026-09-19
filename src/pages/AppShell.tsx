@@ -30,7 +30,8 @@ export default function AppShell() {
   };
 
   useEffect(() => {
-    check();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void check();
   }, []);
 
   if (loading) {
