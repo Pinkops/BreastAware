@@ -16,6 +16,7 @@ import Education from './pages/Education';
 import Settings from './pages/Settings';
 import More from './pages/More';
 import Privacy from './pages/Privacy';
+import VisitReadiness from './pages/VisitReadiness';
 
 export default function App() {
   return (
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="body-map" element={<BodyMap />} />
             <Route path="screening" element={<Screening />} />
             <Route path="doctor-prep" element={<DoctorPrep />} />
+            <Route path="visit-readiness" element={<VisitReadiness />} />
             <Route path="summary" element={<Summary />} />
             <Route path="vault" element={<Vault />} />
             <Route path="education" element={<Education />} />
