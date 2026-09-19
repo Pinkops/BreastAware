@@ -76,7 +76,7 @@ export default function Settings() {
     }
   };
 
-  const deleteAll = async () => {
+    const deleteAll = async () => {
     if (deleteConfirm !== 'DELETE_MY_DATA') {
       setError('Type DELETE_MY_DATA to confirm.');
       return;
@@ -84,11 +84,11 @@ export default function Settings() {
     setBusy(true);
     try {
       await apiSend('/api/export', 'DELETE', { confirm: 'DELETE_MY_DATA' });
-      setMsg('Your BreastAware data was deleted.');
-      setDeleteConfirm('');
+      // The account no longer exists — sign out locally and return to login.
+      await supabase.auth.signOut();
+      navigate('/login');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Delete failed');
-    } finally {
       setBusy(false);
     }
   };
@@ -163,9 +163,11 @@ export default function Settings() {
       </section>
 
       <section className="rounded-2xl border border-rose/25 bg-white p-5 shadow-soft space-y-3">
-        <h3 className="font-display text-lg text-rose-deep">Delete my organizer data</h3>
+        <h3 className="font-display text-lg text-rose-deep">Delete my data &amp; account</h3>
         <p className="text-sm text-charcoal/65">
-          Permanently removes observations, baselines, screenings, appointments, prep items, vault metadata, and check-ins from BreastAware. This cannot be undone. Type <code className="text-xs bg-ivory px-1 rounded">DELETE_MY_DATA</code> to confirm.
+          Permanently removes all of your BreastAware records, uploaded documents, and your account. You will be signed
+          out and will not be able to sign in with this email again. This cannot be undone. Type{' '}
+          <code className="text-xs bg-ivory px-1 rounded">DELETE_MY_DATA</code> to confirm.
         </p>
         <input
           className="input-field"
