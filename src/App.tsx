@@ -15,6 +15,7 @@ import Vault from './pages/Vault';
 import Education from './pages/Education';
 import Settings from './pages/Settings';
 import More from './pages/More';
+import Privacy from './pages/Privacy';
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route
             path="/"
             element={
