@@ -1,5 +1,6 @@
 import supabase from './db-client.js';
 import { requireUser, cors } from './_auth.js';
+import { serverError } from './_util.js';
 
 export default async function handler(req, res) {
   cors(res);
@@ -70,7 +71,6 @@ export default async function handler(req, res) {
 
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
-    console.error('export error:', err);
-    res.status(500).json({ error: err.message });
+    serverError(res, err, 'export error');
   }
 }
