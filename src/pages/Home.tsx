@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ClipboardList,
   NotebookPen,
@@ -48,6 +48,7 @@ interface PrepItem {
 }
 
 export default function Home() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -81,6 +82,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, []);
 
@@ -98,6 +100,16 @@ export default function Home() {
     } catch (err: unknown) {
       setCheckInMsg(err instanceof Error ? err.message : 'Could not save check-in');
     }
+  };
+
+  const handleCheckInAndGo = async (type: string, note: string, to: string) => {
+    setCheckInMsg('');
+    try {
+      await apiSend('/api/check-ins', 'POST', { check_in_type: type, notes: note });
+    } catch {
+      // still navigate even if check-in fails — navigation is primary intent
+    }
+    navigate(to);
   };
 
   if (loading) return <LoadingSpinner label="Opening your space…" />;
@@ -162,16 +174,24 @@ export default function Home() {
             <p className="text-sm font-medium text-charcoal">I haven’t noticed anything different</p>
             <p className="text-xs text-charcoal/50 mt-1">Record an ordinary day</p>
           </button>
-          <Link to="/log-change" className="card-interactive text-left p-4 block" onClick={() => handleCheckIn('noticed_change', 'Planning to log a change')}>
+          <button
+            type="button"
+            onClick={() => handleCheckInAndGo('noticed_change', 'Planning to log a change', '/log-change')}
+            className="card-interactive text-left p-4"
+          >
             <Eye className="w-5 h-5 text-coral mb-2" />
             <p className="text-sm font-medium text-charcoal">I noticed something I want to record</p>
             <p className="text-xs text-charcoal/50 mt-1">Open the observation log</p>
-          </Link>
-          <Link to="/doctor-prep" className="card-interactive text-left p-4 block" onClick={() => handleCheckIn('question', 'Has a question for clinician')}>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleCheckInAndGo('question', 'Has a question for clinician', '/doctor-prep')}
+            className="card-interactive text-left p-4"
+          >
             <MessageCircleQuestion className="w-5 h-5 text-forest mb-2" />
             <p className="text-sm font-medium text-charcoal">I have a question for my healthcare professional</p>
             <p className="text-xs text-charcoal/50 mt-1">Save it for your visit</p>
-          </Link>
+          </button>
         </div>
         {checkInMsg && (
           <p className="mt-3 text-sm text-charcoal/70 bg-white border border-border rounded-xl px-4 py-3">{checkInMsg}</p>
