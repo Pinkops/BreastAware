@@ -23,5 +23,9 @@ export default defineConfig(async ({ mode }) => {
     plugins,
     envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
     define: processEnvDefines,
+    test: {
+      environment: 'node',
+      include: ['api/**/*.test.{js,ts}', 'src/**/*.{test,spec}.{js,ts,tsx}'],
+    },
   };
 })
