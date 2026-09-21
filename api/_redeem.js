@@ -21,8 +21,6 @@ export default async function handler(req, res) {
       }
 
       const trimmed = key.trim();
-
-      // Bonus code path — free premium via README code BA-PREMIUM-2026 (from Premium Kit)
       const BONUS_CODE = process.env.BONUS_CODE || 'BA-PREMIUM-2026';
       const GUMROAD_PRODUCT_ID = process.env.GUMROAD_PRODUCT_ID;
 
@@ -61,23 +59,51 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Invalid license or bonus code. Check your Gumroad receipt or README.txt code BA-PREMIUM-2026.' });
       }
 
-      const { data: profile } = await supabase.from('profiles').select('id').eq('id', user.id).maybeSingle();
+      // FIXED: use ba_profiles with user_id (not profiles with id)
+      const { data: existing } = await supabase
+        .from('ba_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (profile) {
-        await supabase.from('profiles').update({ is_premium: true, premium_source: source, premium_redeemed_at: new Date().toISOString() }).eq('id', user.id);
+      if (existing?.id) {
+        await supabase
+          .from('ba_profiles')
+          .update({ is_premium: true, premium_source: source, premium_redeemed_at: new Date().toISOString() })
+          .eq('user_id', user.id);
       } else {
-        await supabase.from('profiles').insert({ id: user.id, is_premium: true, premium_source: source, premium_redeemed_at: new Date().toISOString() });
+        await supabase.from('ba_profiles').insert({
+          user_id: user.id,
+          is_premium: true,
+          premium_source: source,
+          premium_redeemed_at: new Date().toISOString(),
+          onboarding_complete: false,
+        });
       }
 
+      // Audit table — try both prefixed and non-prefixed
       try {
-        await supabase.from('entitlements').insert({ user_id: user.id, product: 'premium_kit', source, license_key: trimmed.slice(0, 50), redeemed_at: new Date().toISOString() });
+        await supabase.from('ba_entitlements').insert({
+          user_id: user.id,
+          product: 'premium_kit',
+          source,
+          license_key: trimmed.slice(0, 50),
+        });
+      } catch {}
+      try {
+        await supabase.from('entitlements').insert({
+          user_id: user.id,
+          product: 'premium_kit',
+          source,
+          license_key: trimmed.slice(0, 50),
+        });
       } catch {}
 
       return res.status(200).json({ ok: true, premium: true, source, message: 'Premium unlocked — thank you for supporting BreastAware!' });
     }
 
     if (req.method === 'GET') {
-      const { data } = await supabase.from('profiles').select('is_premium, premium_source').eq('id', user.id).maybeSingle();
+      const { data } = await supabase.from('ba_profiles').select('is_premium, premium_source').eq('user_id', user.id).maybeSingle();
       return res.status(200).json({ is_premium: !!data?.is_premium, source: data?.premium_source || null });
     }
 
