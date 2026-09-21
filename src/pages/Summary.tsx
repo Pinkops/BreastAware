@@ -58,7 +58,7 @@ export default function Summary() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `breastaware-summary-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `breastaware-visit-summary-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -79,8 +79,8 @@ export default function Summary() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Health Summary"
-        subtitle="A concise personal profile for clinician conversations. Generated from your private records — not a medical report or diagnosis."
+        title="Visit Summary"
+        subtitle="A concise packet for clinician conversations. Generated from your private records — not a medical report, diagnosis, or risk assessment."
         action={
           <div className="flex gap-2">
             <button type="button" className="btn-secondary" onClick={() => window.print()}>
@@ -100,7 +100,7 @@ export default function Summary() {
           <div className="flex items-start gap-3 mb-4">
             <FileText className="w-6 h-6 text-forest shrink-0" />
             <div>
-              <h2 className="font-display text-xl text-charcoal">BreastAware personal summary</h2>
+              <h2 className="font-display text-xl text-charcoal">BreastAware visit summary</h2>
               <p className="text-xs text-charcoal/50 mt-1">Generated {formatDateTime(data.generated_at)}</p>
               {data.profile?.preferred_name && (
                 <p className="text-sm text-charcoal/70 mt-1">Prepared for: {data.profile.preferred_name}</p>
@@ -180,7 +180,8 @@ export default function Summary() {
 
         {data.risk_notes.length > 0 && (
           <section className="rounded-2xl border border-border bg-white p-5 shadow-soft">
-            <h3 className="font-display text-lg mb-3">Self-noted history topics</h3>
+            <h3 className="font-display text-lg mb-3">Health & family history notes</h3>
+            <p className="text-xs text-charcoal/50 mb-2">Self-noted topics for conversation — not a risk calculation.</p>
             <ul className="space-y-2">
               {data.risk_notes.map((r, i) => (
                 <li key={i} className="text-sm">
