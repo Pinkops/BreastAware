@@ -22,8 +22,8 @@ const More = lazy(() => import('./pages/More'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const VisitReadiness = lazy(() => import('./pages/VisitReadiness'));
 const FreeKit = lazy(() => import('./pages/FreeKit'));
-// ...
-<Route path="/free-kit" element={<FreeKit />} />  // public, outside ProtectedRoute
+const Redeem = lazy(() => import('./pages/Redeem'));
+
 export default function App() {
   return (
     <AuthProvider>
@@ -32,6 +32,7 @@ export default function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/free-kit" element={<FreeKit />} />
             <Route
               path="/"
               element={
@@ -54,6 +55,7 @@ export default function App() {
               <Route path="education/:slug" element={<Education />} />
               <Route path="settings" element={<Settings />} />
               <Route path="more" element={<More />} />
+              <Route path="redeem" element={<Redeem />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
