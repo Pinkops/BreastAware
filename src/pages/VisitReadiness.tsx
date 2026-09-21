@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ClipboardList, Save, Info, Check, Printer } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { ClipboardList, Save, Info, Check, Printer, MessageSquare } from 'lucide-react';
 import { apiGet, apiSend } from '../lib/api';
 import PageHeader from '../components/PageHeader';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -10,6 +11,11 @@ interface Stored {
   answer: string;
   include_in_summary: boolean;
 }
+
+// Accurate, valuable info — based on MedlinePlus "Talking With Your Doctor" and
+// NCI "Questions to Ask Your Doctor", plus standard breast history-taking taught in primary care.
+// This is NOT a diagnostic assessment and does NOT score risk. It is a memory aid so you can
+// give your clinician accurate, prepared answers instead of trying to recall on the spot.
 
 type Question = {
   key: string;
@@ -113,7 +119,6 @@ const SECTIONS: Section[] = [
     ],
   },
 ];
-
 export default function VisitReadiness() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -144,7 +149,6 @@ export default function VisitReadiness() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load();
   }, []);
 
@@ -174,7 +178,7 @@ export default function VisitReadiness() {
         return;
       }
       await apiSend('/api/visit-readiness', 'POST', { items });
-      setMsg(`Saved ${items.length} answer${items.length === 1 ? '' : 's'} privately. Included answers will appear in your Health Summary.`);
+      setMsg(`Saved ${items.length} answer${items.length === 1 ? '' : 's'} privately. Included answers will appear in your Visit Summary.`);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Save failed');
     } finally {
@@ -205,17 +209,33 @@ export default function VisitReadiness() {
   const answeredCount = Object.values(answers).filter((v) => v.trim().length > 0).length;
   const progress = Math.round((answeredCount / totalQuestions) * 100);
 
+  const location = useLocation();
+
   return (
     <div className="space-y-6 max-w-3xl">
       <PageHeader
-        title="Visit Readiness"
-        subtitle="Prepare accurate answers in advance — so you don't have to recall everything on the spot. This is a memory aid, not a medical assessment. No scores are generated."
+        title="Prepare for Visit"
+        subtitle="Part 2 of 2 — Prepared answers (43 questions clinicians may ask). Answer in advance so you don't have to recall on the spot. No scores — your words only."
         action={
           <button type="button" className="btn-secondary" onClick={() => window.print()}>
             <Printer className="w-4 h-4" /> Print
           </button>
         }
       />
+
+      {/* MOVE 6: Merged tabs */}
+      <div className="flex gap-1 p-1 rounded-xl bg-white border border-border w-fit">
+        <Link to="/doctor-prep" className={`px-4 py-2 rounded-lg text-sm font-medium ${location.pathname === '/doctor-prep' ? 'bg-forest text-ivory' : 'text-charcoal/70'}`}>
+          <span className="inline-flex items-center gap-1.5"><MessageSquare className="w-4 h-4" /> My Questions</span>
+        </Link>
+        <Link to="/visit-readiness" className={`px-4 py-2 rounded-lg text-sm font-medium ${location.pathname === '/visit-readiness' ? 'bg-forest text-ivory' : 'text-charcoal/70'}`}>
+          <span className="inline-flex items-center gap-1.5"><ClipboardList className="w-4 h-4" /> Prepared Answers (43)</span>
+        </Link>
+      </div>
+
+      <div className="rounded-xl border border-forest/20 bg-forest/5 p-3 text-xs text-charcoal/70">
+        Flow: <span className="font-medium">Record change → Body Map → Timeline → Prepare (Questions + Answers) → Visit Summary</span> — complete your packet before visit.
+      </div>
 
       <div className="rounded-xl border border-forest/20 bg-forest/5 p-4 flex gap-3">
         <Info className="w-5 h-5 text-forest shrink-0 mt-0.5" />
@@ -290,7 +310,7 @@ export default function VisitReadiness() {
                           checked={include[q.key] !== false}
                           onChange={() => toggleInclude(q.key)}
                         />
-                        Include in Health Summary
+                        Include in Visit Summary
                       </label>
                     </div>
                   ))}
