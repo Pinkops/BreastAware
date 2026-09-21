@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Save, AlertCircle } from 'lucide-react';
+import { Save, AlertCircle, MapPin, ClipboardList, BookOpen, Eye } from 'lucide-react';
 import { apiSend } from '../lib/api';
 import PageHeader from '../components/PageHeader';
 import Disclaimer from '../components/Disclaimer';
@@ -31,6 +31,7 @@ export default function LogChange() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
+  const [lastSaved, setLastSaved] = useState<{ type: string; side: string } | null>(null);
 
   const [changeType, setChangeType] = useState('');
   const [side, setSide] = useState('not_specified');
@@ -74,6 +75,7 @@ export default function LogChange() {
         notes,
         discussed_with_provider: discussed,
       });
+      setLastSaved({ type: changeType, side });
       setDone(true);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Could not save');
@@ -84,29 +86,48 @@ export default function LogChange() {
 
   if (done) {
     return (
-      <div className="max-w-lg mx-auto space-y-6 py-8">
-        <div className="rounded-2xl border border-border bg-white shadow-soft p-6 sm:p-8 text-center">
+      <div className="max-w-2xl mx-auto space-y-6 py-4">
+        <div className="rounded-2xl border border-forest/20 bg-white shadow-soft p-6 sm:p-8 text-center">
           <div className="w-12 h-12 rounded-full bg-forest/10 flex items-center justify-center mx-auto mb-4">
             <Save className="w-6 h-6 text-forest" />
           </div>
-          <h1 className="font-display text-2xl text-charcoal mb-2">Observation saved</h1>
-          <p className="text-sm text-charcoal/70 leading-relaxed mb-4">
-            Your note is timestamped in your private journal. Saving a change does not mean it is or is not serious —
-            only a healthcare professional can evaluate what you noticed.
+          <h1 className="font-display text-2xl text-charcoal mb-2">Observation saved to your private journal</h1>
+          <p className="text-sm text-charcoal/70 leading-relaxed mb-1">
+            {lastSaved ? `${lastSaved.type.replace(/_/g, ' ')} ${lastSaved.side !== 'not_specified' ? `· ${lastSaved.side}` : ''}` : 'Saved'} — timestamped privately. Only you can see it.
           </p>
-          <div className="rounded-xl bg-ivory border border-border p-4 text-left text-sm text-charcoal/75 leading-relaxed mb-6">
+          <p className="text-xs text-charcoal/50 mb-6">Saving does not mean it is or is not serious — only a clinician can evaluate what you noticed.</p>
+
+          <div className="rounded-xl bg-amber-50/70 border border-amber-200/60 p-4 text-left text-sm text-charcoal/75 leading-relaxed mb-6">
             <p className="font-medium text-charcoal mb-1 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-coral" />
-              Next step
+              <AlertCircle className="w-4 h-4 text-amber-700" />
+              Make this record visit-ready — 2 minute next steps
             </p>
-            If this change is new, persistent, or worries you, schedule a conversation with a healthcare professional.
-            You can add questions in Doctor Prep and mark the area on the Body Map for personal documentation.
+            <ol className="list-decimal list-inside space-y-1 text-charcoal/70 mt-2">
+              <li>Mark approximate location on Body Map (optional, helps you describe it)</li>
+              <li>Prepare answers clinicians may ask in Visit Readiness</li>
+              <li>Review timeline to spot patterns before your appointment</li>
+            </ol>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button type="button" className="btn-primary" onClick={() => navigate('/journal')}>View journal</button>
-            <button type="button" className="btn-secondary" onClick={() => navigate('/body-map')}>Mark on body map</button>
-            <button type="button" className="btn-ghost" onClick={() => navigate('/doctor-prep')}>Doctor prep</button>
+
+          <div className="grid sm:grid-cols-3 gap-3">
+            <button type="button" className="rounded-2xl border border-forest bg-forest text-ivory p-4 text-left hover:bg-forest/90 transition-colors" onClick={() => navigate('/body-map')}>
+              <MapPin className="w-5 h-5 mb-2" />
+              <p className="text-sm font-medium">Mark on Body Map</p>
+              <p className="text-xs text-ivory/70 mt-1">Add location dot for this change</p>
+            </button>
+            <button type="button" className="rounded-2xl border border-border bg-white p-4 text-left hover:border-forest/30 transition-colors" onClick={() => navigate('/visit-readiness')}>
+              <ClipboardList className="w-5 h-5 mb-2 text-forest" />
+              <p className="text-sm font-medium text-charcoal">Prepare for visit</p>
+              <p className="text-xs text-charcoal/50 mt-1">Answer 43 Qs in advance</p>
+            </button>
+            <button type="button" className="rounded-2xl border border-border bg-white p-4 text-left hover:border-forest/30 transition-colors" onClick={() => navigate('/journal')}>
+              <BookOpen className="w-5 h-5 mb-2 text-coral" />
+              <p className="text-sm font-medium text-charcoal">View timeline</p>
+              <p className="text-xs text-charcoal/50 mt-1">See all observations</p>
+            </button>
           </div>
+
+          <button type="button" className="btn-ghost mt-6 text-sm" onClick={() => { setDone(false); setChangeType(''); setNotes(''); setLocationDesc(''); setSizeDesc(''); }}>Log another change</button>
         </div>
         <Disclaimer compact />
       </div>
@@ -114,17 +135,17 @@ export default function LogChange() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-3xl mx-auto">
       <PageHeader
-        title="Log a Change"
-        subtitle="Record what you personally noticed. Clear details help you describe the change to a clinician later."
+        title="Record a Change"
+        subtitle="Central record — what you noticed, when, where. Clear details help you describe it to a clinician later. Your notes stay private to you."
       />
       <Disclaimer />
 
       <form onSubmit={submit} className="space-y-5">
         <div className="rounded-2xl border border-border bg-white p-5 shadow-soft space-y-4">
           <div>
-            <label className="block text-sm font-semibold mb-2" htmlFor="change-type">What did you notice?</label>
+            <label className="block text-sm font-semibold mb-2" htmlFor="change-type">What did you notice? *</label>
             <select
               id="change-type"
               className="input-field"
@@ -155,10 +176,11 @@ export default function LogChange() {
                 </button>
               ))}
             </div>
+            <p className="text-xs text-charcoal/45 mt-2 flex items-center gap-1"><MapPin className="w-3 h-3" /> After saving, you can mark approximate location on Body Map for personal documentation.</p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2" htmlFor="observed-at">When did you first notice it?</label>
+            <label className="block text-sm font-semibold mb-2" htmlFor="observed-at">When did you first notice it? *</label>
             <input
               id="observed-at"
               type="datetime-local"
@@ -167,15 +189,15 @@ export default function LogChange() {
               onChange={(e) => setObservedAt(e.target.value)}
               required
             />
-            <p className="text-xs text-charcoal/45 mt-1">Timestamped automatically when you save; you can adjust this field.</p>
+            <p className="text-xs text-charcoal/45 mt-1">Timestamped when you save; you can adjust.</p>
           </div>
         </div>
 
         <div className="rounded-2xl border border-border bg-white p-5 shadow-soft space-y-4">
-          <h3 className="font-display text-lg text-charcoal">Details</h3>
+          <h3 className="font-display text-lg text-charcoal flex items-center gap-2"><Eye className="w-4 h-4 text-forest" /> Details — your words</h3>
           <div>
             <label className="block text-sm font-medium mb-1.5" htmlFor="loc">Where on the breast / chest?</label>
-            <input id="loc" className="input-field" value={locationDesc} onChange={(e) => setLocationDesc(e.target.value)} placeholder="e.g., upper outer left, near nipple" />
+            <input id="loc" className="input-field" value={locationDesc} onChange={(e) => setLocationDesc(e.target.value)} placeholder="e.g., upper outer left, near nipple, under arm" />
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
@@ -198,46 +220,56 @@ export default function LogChange() {
                 className="input-field"
                 value={pain}
                 onChange={(e) => setPain(e.target.value === '' ? '' : Number(e.target.value))}
+                placeholder="0 = none, 10 = severe"
               />
             </div>
             <div>
               <label className="block text-sm font-medium mb-1.5" htmlFor="duration">How long has it been present?</label>
-              <input id="duration" className="input-field" value={duration} onChange={(e) => setDuration(e.target.value)} placeholder="e.g., 3 days, since last month" />
+              <input id="duration" className="input-field" value={duration} onChange={(e) => setDuration(e.target.value)} placeholder="e.g., 3 days, since last period" />
             </div>
           </div>
+
           <div>
-            <span className="block text-sm font-medium mb-2">Anything else nearby?</span>
+            <span className="block text-sm font-medium mb-2">Associated changes (optional)</span>
             <div className="flex flex-wrap gap-2">
               {SYMPTOMS.map((s) => (
                 <button
                   key={s}
                   type="button"
                   onClick={() => toggleSymptom(s)}
-                  className={`px-3 py-1.5 rounded-full text-xs border ${
-                    symptoms.includes(s) ? 'bg-coral/15 border-coral text-charcoal' : 'border-border text-charcoal/60'
-                  }`}
+                  className={`px-3 py-1.5 rounded-full text-xs border ${symptoms.includes(s) ? 'bg-forest/10 border-forest/30 text-forest' : 'bg-white border-border text-charcoal/60'}`}
                 >
                   {s}
                 </button>
               ))}
             </div>
           </div>
+
           <div>
-            <label className="block text-sm font-medium mb-1.5" htmlFor="notes">Free notes</label>
-            <textarea id="notes" rows={4} className="input-field resize-y" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Anything else you want to remember…" />
+            <label className="block text-sm font-medium mb-1.5" htmlFor="notes">Notes — what else would help you describe this later?</label>
+            <textarea id="notes" rows={3} className="input-field resize-y" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="e.g., noticed after shower, changes with cycle, anything that makes it better/worse" />
           </div>
-          <label className="flex items-start gap-2.5 text-sm text-charcoal/75 cursor-pointer">
-            <input type="checkbox" className="mt-1 rounded border-border" checked={discussed} onChange={(e) => setDiscussed(e.target.checked)} />
-            I have already discussed this with a healthcare professional
+
+          <label className="flex items-start gap-2 text-sm">
+            <input type="checkbox" checked={discussed} onChange={(e) => setDiscussed(e.target.checked)} className="mt-0.5" />
+            <span className="text-charcoal/70">I have already discussed this with a clinician (for your record-keeping only)</span>
           </label>
         </div>
 
         {error && <p className="text-sm text-rose-deep" role="alert">{error}</p>}
 
-        <button type="submit" className="btn-primary" disabled={busy}>
-          <Save className="w-4 h-4" />
-          {busy ? 'Saving…' : 'Save observation'}
-        </button>
+        <div className="flex gap-3">
+          <button type="submit" disabled={busy} className="btn-primary flex-1 justify-center">
+            <Save className="w-4 h-4" />
+            {busy ? 'Saving…' : 'Save to private journal'}
+          </button>
+          <button type="button" className="btn-secondary" onClick={() => navigate('/journal')}>Cancel</button>
+        </div>
+
+        <div className="rounded-xl border border-border bg-ivory/50 p-4 text-xs text-charcoal/60 leading-relaxed">
+          <p className="font-medium text-charcoal/80 mb-1">What happens after you save?</p>
+          Your observation goes to My Journal (timeline). Next, you can mark location on Body Map, prepare answers for your visit, and generate a Visit Summary packet for your clinician.
+        </div>
       </form>
     </div>
   );
