@@ -18,7 +18,9 @@ import screenings from './_screenings.js';
 import summary from './_summary.js';
 import upload from './_upload.js';
 import vault from './_vault.js';
+import vaultUploadUrl from './_vault-upload-url.js';
 import visitReadiness from './_visit-readiness.js';
+import redeem from './_redeem.js';
 import { rateLimit } from './_util.js';
 
 const routes = {
@@ -36,7 +38,9 @@ const routes = {
   summary,
   upload,
   vault,
+  'vault-upload-url': vaultUploadUrl,
   'visit-readiness': visitReadiness,
+  redeem,
 };
 
 export default async function handler(req, res) {
