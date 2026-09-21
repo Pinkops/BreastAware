@@ -184,24 +184,14 @@ export default function BodyMap() {
 
   return (
     <div className="space-y-6 max-w-6xl">
-      <PageHeader
-        title="Body Map"
-        subtitle="Premium documentation map — tap to mark where you noticed something. This is a personal memory aid, not a clinical diagram, diagnosis, or measurement tool."
+       <PageHeader
+        title="Body Map — Location Documentation"
+        subtitle="Secondary documentation for your Journal observations. Mark approximate location to help describe changes to your clinician. Linked to your timeline — not a diagnosis or measurement tool."
       />
 
-      <div className="rounded-xl border border-forest/20 bg-forest/5 p-4 flex gap-3">
-        <Info className="w-5 h-5 text-forest shrink-0 mt-0.5" />
-        <div className="text-sm text-charcoal/75 leading-relaxed">
-          <p className="font-medium text-charcoal">How to use this premium map</p>
-          <p className="mt-1">
-            The illustration shows a front torso with both breasts, nipple/areola landmarks, axilla (armpit) and collarbone areas.
-            Tap/click to place a marker. The app auto-detects side, quadrant (upper outer, etc.) and clock position (e.g., 2 o'clock) to help you describe location to a clinician.
-            Use keyboard: Tab to map, Enter to place, arrow keys to move, Enter to save, Esc to cancel.
-          </p>
-          <p className="mt-2 text-xs text-charcoal/55">
-            Markers are approximate. No measurements, volumes, or diagnoses are calculated. For personal notes only.
-          </p>
-        </div>
+      <div className="rounded-xl border border-forest/20 bg-ivory p-3 flex gap-2 items-center">
+        <span className="text-xs text-charcoal/60">Flow: Record change → Mark on Body Map → Review timeline → Visit Summary. Your Journal is the central record; Body Map adds location context.</span>
+        <a href="/journal" className="ml-auto text-xs font-medium text-forest hover:underline inline-flex items-center gap-1">Go to timeline →</a>
       </div>
 
       <Disclaimer compact />
