@@ -21,7 +21,9 @@ const Settings = lazy(() => import('./pages/Settings'));
 const More = lazy(() => import('./pages/More'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const VisitReadiness = lazy(() => import('./pages/VisitReadiness'));
-
+const FreeKit = lazy(() => import('./pages/FreeKit'));
+// ...
+<Route path="/free-kit" element={<FreeKit />} />  // public, outside ProtectedRoute
 export default function App() {
   return (
     <AuthProvider>
