@@ -4,7 +4,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingSpinner from './components/LoadingSpinner';
 
-// BA-044: Route-based code splitting — 612KB single chunk -> ~150KB initial
 const AppShell = lazy(() => import('./pages/AppShell'));
 const Login = lazy(() => import('./pages/Login'));
 const Home = lazy(() => import('./pages/Home'));
@@ -22,6 +21,7 @@ const More = lazy(() => import('./pages/More'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const VisitReadiness = lazy(() => import('./pages/VisitReadiness'));
 const FreeKit = lazy(() => import('./pages/FreeKit'));
+const Starter = lazy(() => import('./pages/Starter'));
 const Redeem = lazy(() => import('./pages/Redeem'));
 
 export default function App() {
@@ -33,6 +33,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/free-kit" element={<FreeKit />} />
+            <Route path="/starter" element={<Starter />} />
             <Route
               path="/"
               element={
