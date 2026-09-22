@@ -20,6 +20,7 @@ import upload from './_upload.js';
 import vault from './_vault.js';
 import vaultUploadUrl from './_vault-upload-url.js';
 import visitReadiness from './_visit-readiness.js';
+import leads from './_leads.js';
 import redeem from './_redeem.js';
 import { rateLimit } from './_util.js';
 
@@ -39,6 +40,7 @@ const routes = {
   upload,
   vault,
   'vault-upload-url': vaultUploadUrl,
+  leads,
   'visit-readiness': visitReadiness,
   redeem,
 };
